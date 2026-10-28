@@ -54,6 +54,28 @@ All twelve before-and-after screenshots, with what each one proves: [`evidence/`
   as plaintext, so I wrote a [scrubber](tools/scrub_workflow.py) that redacts API keys, webhook
   IDs and email addresses, and refuses to write its output if any known secret survives.
 
+## Hands-on labs
+
+Nine chapters, each a lab built and tested on this machine. Chapters 1–2 are design exercises;
+3–9 are hands-on. Each chapter file keeps its original text, with correction notes where a later
+chapter found a mistake. Screenshots are in [`chapters/`](chapters/), named `labN-*.png`.
+
+| # | Chapter | What gets built | Evidence |
+|---|---|---|---|
+| 1 | [**SOC & Incident Response Foundations**](chapters/Chapter-01-SOC-Foundations.md) | Paper lab: maps a full manual phishing triage, step by step, to find where the analyst's time goes. | — |
+| 2 | [**SOAR Core Concepts**](chapters/Chapter-02-Core-Concepts.md) | Paper lab: designs a malware-alert playbook — orchestration vs automation vs response, and where a human gate belongs. | — |
+| 3 | [**Building Your Lab**](chapters/Chapter-03-Building-Your-Lab.md) | Deploys Shuffle in Docker, activates the VirusTotal app and runs the first automated lookup. Records the real setup failures (memory, disk, overlay network). | [containers up](chapters/lab3-docker-ps.png) · [first VT call](chapters/lab3-workflow-success.png) |
+| 4 | [**Your First Real Playbook**](chapters/Chapter-04-Your-First-Real-Playbook.md) | Builds `ip_enrichment_v1`: webhook trigger, VirusTotal and AbuseIPDB in parallel (AbuseIPDB via raw HTTP), a join, and conditioned CLEAN / MALICIOUS verdicts. | [canvas](chapters/lab4-workflow-canvas.png) · [8.8.8.8 → clean](chapters/lab4-clean-run-8888.png) · [Tor exit → malicious](chapters/lab4-malicious-run-tor.png) |
+| 5 | [**Phishing Response Automation**](chapters/Chapter-05-Phishing-Response-Automation.md) | Builds `phishing_triage_v1`: refangs and extracts IOCs from an email body, checks sender domain and attachment hash, and branches on the hash using the EICAR test file. | [canvas](chapters/lab5-workflow-canvas.png) · [IOC extraction](chapters/lab5-malicious-extract-iocs.png) · [phishing verdict](chapters/lab5-malicious-verdict.png) |
+| 6 | [**SIEM Integration**](chapters/Chapter-06-SIEM-Integration.md) | Deploys Wazuh alongside Shuffle, tests detection with `wazuh-logtest`, writes the integration script, and gets a real correlated alert (rule 5763) to fire the playbook with no human. | [rule 5763 alert](chapters/lab6-alert-5763-dashboard.png) · [Wazuh-triggered run](chapters/lab6-trophy-wazuh-triggered-exec.png) |
+| 7 | [**Python for SOAR**](chapters/Chapter-07-Python-for-SOAR.md) | Adds a Python risk-scoring node — typosquat check, domain age via RDAP, weighted score — that catches link-only phishing with zero reputation signal (score 70). | [risk scoring](chapters/lab7-killshot-risk-scoring.png) · [VT domain: 0](chapters/lab7-killshot-vt-domain-clean.png) · [regression](chapters/lab7-regression-benign.png) |
+| 8 | [**Case Management & Response Actions**](chapters/Chapter-08-Case-Management-Response.md) | Adds TheHive: the playbook raises an alert as a service account, then pauses for human approval before a simulated block. The analyst promotes the alert to a case. | [alert by shuffle-bot](chapters/lab8-alert-detail-shufflebot.png) · [waiting for approval](chapters/lab8-execution-waiting.png) · [case](chapters/lab8-case-promoted-metrics.png) |
+| 9 | [**Playbook Design at Scale**](chapters/Chapter-09-Playbook-Design-at-Scale.md) | Chaos-tests its own playbooks — dead API key, garbage input, code injection — finds them failing open, and hardens `brute_force_response_v3` to fail closed. | [dead key → clean](chapters/lab9-chaos1-deadkey-failopen.png) · [injection crash](chapters/lab9-chaos3-injection-crash.png) · [v3 fails closed](chapters/lab9-v3-deadkey-failclosed.png) |
+
+The closing work — hardening the phishing playbook against injection, fixing the TheHive dedup
+key, and packaging this repo — is documented in [`evidence/`](evidence/README.md) (screenshots
+`ch10-*`) rather than a chapter file.
+
 ## Architecture
 
 | System | Role | In this lab |
