@@ -1,0 +1,18 @@
+# Never commit credentials
+api-keys.txt
+*.key
+*-key.pem
+.env
+.env.*
+secrets/
+
+# Raw (unsanitized) workflow exports. Only commit copies produced by
+# tools/scrub_workflow.py.
+*.raw.json
+
+# Python build artefacts
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store

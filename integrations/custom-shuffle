@@ -1,0 +1,26 @@
+#!/usr/bin/env python3
+# custom-shuffle: forward Wazuh alerts to Shuffle, reshaped for ip_enrichment-style playbooks
+import json, sys, urllib.request, ssl
+
+alert_file = sys.argv[1]          # Wazuh passes the alert JSON file as arg 1
+hook_url   = sys.argv[3]          # and the hook_url from ossec.conf as arg 3
+
+with open(alert_file) as f:
+    alert = json.load(f)
+
+payload = {
+    "src_ip":      alert.get("data", {}).get("srcip", "unknown"),
+    "rule_id":     alert.get("rule", {}).get("id"),
+    "rule_desc":   alert.get("rule", {}).get("description"),
+    "level":       alert.get("rule", {}).get("level"),
+    "full_log":    alert.get("full_log", ""),
+}
+
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE   # lab-only: Shuffle's cert is self-signed
+
+req = urllib.request.Request(hook_url,
+        data=json.dumps(payload).encode(),
+        headers={"Content-Type": "application/json"})
+urllib.request.urlopen(req, context=ctx, timeout=10)

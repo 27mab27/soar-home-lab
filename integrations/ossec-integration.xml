@@ -1,0 +1,26 @@
+<!--
+  Wazuh -> Shuffle integration for brute_force_response_v3.
+  Appended to /var/ossec/etc/ossec.conf inside the Wazuh manager container.
+  The webhook ID is redacted: anyone holding a webhook URL can trigger the playbook.
+  Replace REPLACE_WITH_YOUR_WEBHOOK_ID with the ID Shuffle shows on the workflow's webhook trigger.
+-->
+<ossec_config>
+  <integration>
+    <name>custom-shuffle</name>
+    <hook_url>https://host.docker.internal:3443/api/v1/hooks/webhook_REPLACE_WITH_YOUR_WEBHOOK_ID</hook_url>
+    <group>authentication_failures</group>
+    <level>10</level>
+    <alert_format>json</alert_format>
+  </integration>
+</ossec_config>
+
+<!--
+  Lab only: the log file the manager watches. Brute-force attempts are replayed into it,
+  because the lab has no agents. Remove this block on a real deployment.
+-->
+<ossec_config>
+  <localfile>
+    <log_format>syslog</log_format>
+    <location>/var/log/test.log</location>
+  </localfile>
+</ossec_config>
