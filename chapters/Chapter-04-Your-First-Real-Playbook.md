@@ -90,6 +90,11 @@ $exec.src_ip
 
 `$exec` is Shuffle's variable for "whatever the trigger received." This is the **Parse** step: data flowing from trigger into action.
 
+<p><img src="lab4-virustotal-config.png" width="720" alt="VirusTotal node: get_an_ip_address_report with $exec.src_ip. Captured before the start-node fix, while it still hung directly off the webhook."></p>
+
+*VirusTotal node: `get_an_ip_address_report` with `$exec.src_ip`. Captured before the start-node fix, while it still hung directly off the webhook.*
+
+
 ### Step 4 — AbuseIPDB node, via the HTTP app
 
 Shuffle has an AbuseIPDB app, but build this one with the generic **Http** app instead. Prebuilt apps exist for maybe 2,500 tools. The other ten thousand tools you'll meet in your career are integrated exactly this way, with raw API calls. This is the skill.
@@ -108,6 +113,11 @@ https://api.abuseipdb.com/api/v2/check?ipAddress=$exec.src_ip&maxAgeInDays=90
 Key: YOUR_ABUSEIPDB_KEY
 Accept: application/json
 ```
+
+<p><img src="lab4-abuseipdb-http-config.png" width="720" alt="AbuseIPDB through the raw HTTP app; the key is a placeholder here. Also captured before the start-node fix: both nodes off the webhook is the wiring that got http_1 silently skipped."></p>
+
+*AbuseIPDB through the raw HTTP app; the key is a placeholder here. Also captured before the start-node fix: both nodes off the webhook is the wiring that got `http_1` silently skipped.*
+
 
 ### Step 5 — The condition and verdict nodes
 
@@ -148,6 +158,11 @@ You now have a real branch: same input, two possible paths.
 
 Shuffle executes the saved workflow, not what's on screen.
 
+<p><img src="lab4-workflow-canvas.png" width="720" alt="The finished ip_enrichment_v1: start node fanning out to both lookups, a join, and two conditioned verdicts."></p>
+
+*The finished `ip_enrichment_v1`: start node fanning out to both lookups, a join, and two conditioned verdicts.*
+
+
 ## 4.3 Fire it like a SIEM would
 
 From your Mac terminal. The `-k` flag is needed because of the self-signed certificate:
@@ -163,6 +178,19 @@ curl -k -X POST https://localhost:3443/api/v1/hooks/YOUR_WEBHOOK_ID \
   -H "Content-Type: application/json" \
   -d '{"src_ip": "185.220.101.5"}'
 ```
+
+<p><img src="lab4-execution-arguments.png" width="720" alt="The two test payloads."></p>
+
+*The two test payloads.*
+
+<p><img src="lab4-clean-run-8888.png" width="720" alt="8.8.8.8 → VT malicious 0, AbuseIPDB 0 → CLEAN."></p>
+
+*8.8.8.8 → VT malicious 0, AbuseIPDB 0 → **CLEAN**.*
+
+<p><img src="lab4-malicious-run-tor.png" width="720" alt="185.220.101.5 (Tor exit) → VT malicious 12, AbuseIPDB 100 → MALICIOUS."></p>
+
+*185.220.101.5 (Tor exit) → VT malicious 12, AbuseIPDB 100 → **MALICIOUS**.*
+
 
 Then open the workflow's execution view and watch: the trigger fires, both enrichment nodes light up together, and only **one** verdict node executes per run.
 

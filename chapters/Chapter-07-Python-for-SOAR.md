@@ -200,6 +200,11 @@ Shuffle substitutes the `$variables` into the code **as text** before running it
 5. Add `$risk_scoring.risk_score` and `$risk_scoring.reasons` to both verdict texts.
 6. If the node fails, click it and read the Python traceback — it names the exact line. Debugging tracebacks is part of this chapter's curriculum, not a detour.
 
+<p><img src="lab7-v2-canvas.png" width="720" alt="phishing_triage_v2: the Risk Scoring Python node between the evidence join and the verdicts."></p>
+
+*`phishing_triage_v2`: the `Risk Scoring` Python node between the evidence join and the verdicts.*
+
+
 ---
 
 ## 🧪 Lab 7: `phishing_triage_v2`
@@ -229,3 +234,24 @@ curl -k -X POST https://localhost:3443/api/v1/hooks/YOUR_WEBHOOK_ID \
 ```
 
 Same phishing email, clean attachment hash. This is the exact case v1 waved through.
+
+<p><img src="lab7-killshot-extract-iocs.png" width="360" alt="Kill shot: the same phishing email with a clean attachment — IOCs extracted as before."></p>
+
+*Kill shot: the same phishing email with a clean attachment — IOCs extracted as before.*
+
+<p><img src="lab7-killshot-vt-domain-clean.png" width="360" alt="VirusTotal answers for the typosquat domain (HTTP 200) but scores it 0 malicious."></p>
+
+*VirusTotal answers for the typosquat domain (HTTP 200) but scores it 0 malicious.*
+
+<p><img src="lab7-killshot-risk-scoring.png" width="360" alt="Risk Scoring catches it anyway: typosquat of microsoft (+40) and an unregistered domain (+30) = 70 → PHISHING."></p>
+
+*Risk Scoring catches it anyway: typosquat of `microsoft` (+40) and an unregistered domain (+30) = **70 → PHISHING**.*
+
+<p><img src="lab7-regression-payload.png" width="360" alt="Regression: the GitHub newsletter payload."></p>
+
+*Regression: the GitHub newsletter payload.*
+
+<p><img src="lab7-regression-benign.png" width="360" alt="Still LIKELY_BENIGN: score 0, domain 6,942 days old."></p>
+
+*Still **LIKELY_BENIGN**: score 0, domain 6,942 days old.*
+

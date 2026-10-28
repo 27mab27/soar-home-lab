@@ -103,6 +103,11 @@ docker ps
 ```
 You should see several containers with `shuffle` in their names (frontend, backend, orborus, database), all with status `Up`.
 
+<p><img src="lab3-docker-ps.png" width="720" alt="docker ps: the Shuffle core containers and app workers up."></p>
+
+*`docker ps`: the Shuffle core containers and app workers up.*
+
+
 ## 3.4 Step 3 — First login
 
 1. Open your browser → **https://localhost:3443** (or http://localhost:3001)
@@ -111,6 +116,11 @@ You should see several containers with `shuffle` in their names (frontend, backe
 4. You'll land on the Shuffle dashboard: Workflows, Apps, and a getting-started screen.
 
 Take a screenshot of this dashboard. Seriously — this is the "before" photo of your portfolio.
+
+<p><img src="lab3-shuffle-dashboard.png" width="720" alt="Logged in to Shuffle for the first time."></p>
+
+*Logged in to Shuffle for the first time.*
+
 
 ## 3.5 Step 4 — Get your free threat-intel API keys
 
@@ -136,6 +146,15 @@ Save all three keys in a local text file called `api-keys.txt`. **Rule from day 
 6. Click the running node and inspect the result: you should see a JSON response full of data about 8.8.8.8.
 
 If you see JSON — congratulations, your SOAR platform just made its first automated threat-intel query. That's orchestration (Shuffle ↔ VirusTotal), automation (no human clicked virustotal.com), and it took ~2 seconds.
+
+<p><img src="lab3-virustotal-app.png" width="720" alt="The VirusTotal v3 app activated."></p>
+
+*The VirusTotal v3 app activated.*
+
+<p><img src="lab3-workflow-success.png" width="720" alt="test_connection: the first automated lookup — VirusTotal returns HTTP 200 for 8.8.8.8."></p>
+
+*`test_connection`: the first automated lookup — VirusTotal returns HTTP 200 for 8.8.8.8.*
+
 
 ## 3.7 Useful Docker commands for daily lab life
 

@@ -97,12 +97,22 @@ Drag **Virustotal v3**, connect from **Receive_report**. Rename `VT_Sender_Domai
 
 We pass the domain pre-split in the payload. Splitting `from` into a domain inside Shuffle is string-surgery that gets much easier with Python in Chapter 7.
 
+<p><img src="lab5-vt-domain-config.png" width="720" alt="VT_Sender_Domain: domain report on $exec.sender_domain."></p>
+
+*`VT_Sender_Domain`: domain report on `$exec.sender_domain`.*
+
+
 ### Step 5 — Attachment hash reputation
 
 Drag **Virustotal v3** again, connect from **Receive_report**. Rename `VT_Attachment_Hash`.
 
 - Action: **Get a hash report** — in the API this is `get_a_hash_report_`. There is no action called "Get a file report" in this app version; the file-named actions only handle comments and uploads.
 - The field is called **`id`**, not `hash`. Set it to `$exec.attachment_sha256`
+
+<p><img src="lab5-vt-hash-config.png" width="720" alt="VT_Attachment_Hash: the action is &quot;Get a hash report&quot; and the field is id."></p>
+
+*`VT_Attachment_Hash`: the action is "Get a hash report" and the field is `id`.*
+
 
 ### Step 6 — Evidence join
 
@@ -120,6 +130,11 @@ Extracted IOCs: $extract_iocs
 ```
 
 Remember the scoping rule from Chapter 4: a node can only reference results from its own **ancestors**. That is why all three enrichment nodes must converge here before any of their values can be combined.
+
+<p><img src="lab5-parse-ioc-config.png" width="720" alt="Evidence Summary building the triage block, with its two conditioned verdict edges."></p>
+
+*`Evidence Summary` building the triage block, with its two conditioned verdict edges.*
+
 
 ### Step 7 — Verdicts
 
@@ -142,6 +157,11 @@ Give each the full evidence block plus its verdict line:
 - **Benign:** `LIKELY BENIGN - [SIMULATED] reply to reporter: email is safe. Closing case.` Thank the reporter — reporting behaviour must be rewarded.
 
 **Save.**
+
+<p><img src="lab5-workflow-canvas.png" width="720" alt="The finished phishing_triage_v1: three parallel enrichments, a join, and two verdicts."></p>
+
+*The finished `phishing_triage_v1`: three parallel enrichments, a join, and two verdicts.*
+
 
 ## 5.5 Fire it
 
@@ -174,6 +194,23 @@ curl -k -X POST https://localhost:3443/api/v1/hooks/YOUR_WEBHOOK_ID \
 ```
 
 Watch the execution: parse fires, both VT lookups run in parallel, evidence joins, exactly one verdict lights up.
+
+<p><img src="lab5-execution-arguments.png" width="720" alt="The malicious and benign test payloads."></p>
+
+*The malicious and benign test payloads.*
+
+<p><img src="lab5-malicious-extract-iocs.png" width="720" alt="parse_ioc refangs hxxps://micros0ft-support[.]xyz/login into a URL and a domain."></p>
+
+*`parse_ioc` refangs `hxxps://micros0ft-support[.]xyz/login` into a URL and a domain.*
+
+<p><img src="lab5-malicious-verdict.png" width="720" alt="EICAR hash: 66 engines → PHISHING CONFIRMED. The sender domain scores 0."></p>
+
+*EICAR hash: 66 engines → **PHISHING CONFIRMED**. The sender domain scores 0.*
+
+<p><img src="lab5-benign-verdict.png" width="720" alt="GitHub newsletter with an empty-file hash → LIKELY BENIGN."></p>
+
+*GitHub newsletter with an empty-file hash → **LIKELY BENIGN**.*
+
 
 ---
 
